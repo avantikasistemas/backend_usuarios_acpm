@@ -22,3 +22,14 @@ class Usuarios:
             return self.tools.output(400, "El NIT debe ser un valor numérico")
         self.querys.insertar_usuario(nit)
         return self.tools.output(200, f"NIT {nit} registrado correctamente")
+
+    def inactivar_usuario(self, data={}):
+        nit = data.get("nit")
+        if not nit:
+            return self.tools.output(400, "El campo NIT es requerido")
+        try:
+            nit = int(nit)
+        except (ValueError, TypeError):
+            return self.tools.output(400, "El NIT debe ser un valor numérico")
+        self.querys.inactivar_usuario(nit)
+        return self.tools.output(200, f"NIT {nit} inactivado correctamente")

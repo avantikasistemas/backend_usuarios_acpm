@@ -99,3 +99,25 @@ class Querys:
             self.db.rollback()
             traceback.print_exc()
             raise CustomException(f"Error insertando usuario: {e}")
+
+    def inactivar_usuario(self, nit: int):
+        """Marca el estado del usuario como 'R' (Retirado) en y_personal_contratos."""
+        try:
+            en_contratos = self.db.execute(text("""
+                SELECT COUNT(*) FROM y_personal_contratos WHERE nit = :nit
+            """), {"nit": nit}).scalar()
+
+            if not en_contratos:
+                raise CustomException(f"El NIT {nit} no se encuentra registrado en contratos.")
+
+            self.db.execute(text("""
+                UPDATE y_personal_contratos SET estado = 'R' WHERE nit = :nit
+            """), {"nit": nit})
+
+            self.db.commit()
+        except CustomException:
+            raise
+        except Exception as e:
+            self.db.rollback()
+            traceback.print_exc()
+            raise CustomException(f"Error inactivando usuario: {e}")
