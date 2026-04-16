@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ./cartera_backend
+      dockerfile: Dockerfile
+    container_name: estados-cartera-backend
+    env_file:
+      - .env.backend
+    volumes:
+      - uploads-data:/app/Uploads
+    expose:
+      - "8009"
+    networks:
+      - proxy
+    restart: unless-stopped
+  frontend:
+    build:
+      context: ./cartera_frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://whatsapp-cartera.avantika.com.co/api
+    container_name: estados-cartera-frontend
+    depends_on:
+      - backend
+    expose:
+      - "80"
+    networks:
+      - proxy
+    restart: unless-stopped
+networks:
+  proxy:
+    external: true
+volumes:
+  uploads-data:
+ 
